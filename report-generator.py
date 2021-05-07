@@ -1,55 +1,55 @@
 import xlsxwriter
-import pandas
 
 from detectify import get_scan_profiles, get_latest_full_report
+from xlsxwriter.worksheet import Worksheet
 
-# Create a workbook and add a worksheet.
-# from xlsxwriter.worksheet import Worksheet
-
-df = pandas.DataFrame()
-writer = pandas.ExcelWriter('Findings.xlsx', engine='xlsxwriter')
-workbook = writer.book
-
-# workbook = xlsxwriter.Workbook('Findings.xlsx')
-header = workbook.add_format({'bold': True})
-header.set_pattern(1)  # This is optional when using a solid fill.
-header.set_bg_color('orange')
-header.set_font_color('black')
-header.set_font_size(14)
+# Create a workbook
+workbook = xlsxwriter.Workbook('Findings.xlsx')
+header = workbook.add_format()
+alignment = workbook.add_format()
 
 
-def set_column_width(self):
-    length_list = [len(x) for x in self.columns]
-    for i, width in enumerate(length_list):
-        self.worksheet.set_column(i, i, width)
+# Define header format
+def _define_headers():
+    header.set_bold(True)
+    header.set_pattern(1)  # This is optional when using a solid fill.
+    header.set_bg_color('orange')
+    header.set_font_color('black')
+    header.set_font_size(14)
 
 
-def get_col_widths(dataframe):
-    # First we find the maximum length of the index column
-    idx_max = max([len(str(s)) for s in dataframe.index.values] + [len(str(dataframe.index.name))])
-    # Then, we concatenate this to the max of the lengths of column name and its values for each column, left to right
-    return [idx_max] + [max([len(str(s)) for s in dataframe[col].values] + [len(col)]) for col in dataframe.columns]
+# Define cell alignment
+def _set_alignment():
+    alignment.set_align('left')
 
 
+# Prepare worksheet headers and column width
 def prepare_worksheet(ws):
+    _define_headers()
+    _set_alignment()
     ws.write(0, 0, "Profile Name", header)
     ws.write(0, 1, "Title", header)
     ws.write(0, 2, "Score", header)
     ws.write(0, 3, "Found At", header)
     ws.write(0, 4, "Date", header)
+    ws.set_column(0, 0, 30)
+    ws.set_column(1, 1, 40)
+    ws.set_column(2, 2, 10)
+    ws.set_column(3, 3, 50)
+    ws.set_column(4, 4, 15)
 
 
-profiles = get_scan_profiles()  # get 2 scan profiles, check if they are verified (status:verified)
+# Get scan profiles that are authorized by API Key and Secret Key
+profiles = get_scan_profiles()
 for profile in profiles:
     if profile['status'] == "verified":
         row = 1
         col = 0
         score = 'NA'
         profileName = profile['name']
-        df.to_excel(writer, sheet_name=f'{profileName}')
-        # worksheet = workbook.add_worksheet(profileName)
-        worksheet = writer.sheets[f'{profileName}']
+        worksheet = workbook.add_worksheet(profileName)
         prepare_worksheet(worksheet)
+        # Get the latest report for a specific scan profile
         report = get_latest_full_report(profile['token'])
         if len(report['findings']) == 0:
             print("No findings!")
@@ -62,14 +62,14 @@ for profile in profiles:
                 found_at = finding['found_at']
                 date = finding['timestamp'].split("T")[0]
                 print(profileName, title, score, found_at, date)
-                # Iterate over the data and write it out row by row.
-                worksheet.write(row, col, profileName)
-                worksheet.write(row, col + 1, title)
-                worksheet.write(row, col + 2, score)
-                worksheet.write(row, col + 3, found_at)
-                worksheet.write(row, col + 4, date)
+                # Iterate over the data and write it out cell by cell.
+                worksheet.write(row, col, profileName, alignment)
+                worksheet.write(row, col + 1, title, alignment)
+                worksheet.write(row, col + 2, score, alignment)
+                worksheet.write(row, col + 3, found_at, alignment)
+                worksheet.write(row, col + 4, date, alignment)
                 row += 1
-        set_column_width(df)
+            worksheet.add_table(0, 0, row-1, 4, {'banded_rows': True, 'header_row': False})  # Format data as table
     if profile['status'] == "unable_to_resolve":
         profileName = profile['name']
         worksheet = workbook.add_worksheet(profileName)

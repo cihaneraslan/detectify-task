@@ -144,9 +144,10 @@ def start_scan(scan_profile_token: str):
     if resp is not None:
         print(resp)
 
-# ADDED
+#  ADDED
 
 
+#  Get scan profiles
 def get_scan_profiles() -> dict:
     path = "/v2/profiles/"
     url = f"{ENDPOINT}{path}"
@@ -154,32 +155,10 @@ def get_scan_profiles() -> dict:
     return resp
 
 
-#  get the latest full report with high severity only
+#  Get the latest full report with high severity only
 def get_latest_full_report(scan_profile_token: str) -> dict:
     path = f"/v2/fullreports/{scan_profile_token}/latest/"
     param = "?severity=high"
     url = f"{ENDPOINT}{path}{param}"
     resp = send_get_request(path, url)
     return resp
-
-
-""""
-# scripts starts here
-if __name__ == "__main__":
-    profiles = get_scan_profiles()  # get 2 scan profiles, check if they are verified (status:verified)
-    for profile in profiles:
-        if profile['status'] == "verified":
-            profileName = profile['name']
-            report = get_latest_full_report(profile['token'])
-            if len(report['findings']) == 0:
-                print("No findings!")
-            else:
-                for finding in report['findings']:
-                    title = finding['title']
-                    for scores in finding['score']:
-                        if scores['version'] == "2.0":  # assumed there is only one score with version 2.0
-                            score = scores['score']
-                    found_at = finding['found_at']
-                    date = finding['timestamp'].split("T")[0]
-                    print(profileName, title, score, found_at, date)
-"""
