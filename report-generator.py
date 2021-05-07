@@ -52,7 +52,7 @@ def fill_excel(report: dict, profilename: str, worksheet: Worksheet):
     if len(report['findings']) == 0:
         print("No findings!")
     else:
-        report['findings'].sort(key=lambda x: x['title'], reverse=True)
+        report['findings'].sort(key=lambda x: x['title'], reverse=False)
         for finding in report['findings']:
             title = finding['title']
             for scores in finding['score']:
