@@ -96,11 +96,14 @@ To get a local copy up and running follow these simple steps.
    ```sh
    Findings.xlsx
    ```
-For completed (verified) analysis;  findings will be listed with the following attributes; `Profile Name`, `Title`, `Score`, `Found At`, `Date`
+  
+* Sample report can be found at `sample\Findings.xlsx` 
+
+* For completed (verified) analysis;  findings will be listed with the following attributes; `Profile Name`, `Title`, `Score`, `Found At`, `Date`
 
 ![report-generator][product-screenshot]
 
-For incomplete analysis; a blank sheet will be generated with the scan profile name 
+* For incomplete analysis; a blank sheet will be generated with the scan profile name 
 
 
 
