@@ -35,13 +35,15 @@ def prepare_worksheet(profile_name: str, empty: bool) -> Worksheet:
         ws.write(0, 0, "Profile", header)
         ws.write(0, 1, "Title", header)
         ws.write(0, 2, "Score", header)
-        ws.write(0, 3, "Found At", header)
-        ws.write(0, 4, "Date", header)
+        ws.write(0, 3, "Severity", header)
+        ws.write(0, 4, "Found At", header)
+        ws.write(0, 5, "Date", header)
         ws.set_column(0, 0, 30)
         ws.set_column(1, 1, 40)
         ws.set_column(2, 2, 10)
-        ws.set_column(3, 3, 50)
-        ws.set_column(4, 4, 15)
+        ws.set_column(3, 3, 15)
+        ws.set_column(4, 4, 50)
+        ws.set_column(5, 5, 15)
     return ws
 
 
@@ -65,10 +67,11 @@ def fill_excel(report: dict, profilename: str, worksheet: Worksheet):
             worksheet.write(row, col, profilename, alignment)
             worksheet.write(row, col + 1, title, alignment)
             worksheet.write(row, col + 2, score, alignment)
-            worksheet.write(row, col + 3, found_at, alignment)
-            worksheet.write(row, col + 4, date, alignment)
+            worksheet.write(row, col + 3, "High", alignment)
+            worksheet.write(row, col + 4, found_at, alignment)
+            worksheet.write(row, col + 5, date, alignment)
             row += 1
-        worksheet.add_table(0, 0, row - 1, 4, {'banded_rows': True, 'header_row': False})  # Format data as table
+        worksheet.add_table(0, 0, row - 1, 5, {'banded_rows': True, 'header_row': False})  # Format data as table
 
 
 if __name__ == '__main__':
