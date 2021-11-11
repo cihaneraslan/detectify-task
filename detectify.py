@@ -9,7 +9,8 @@ from datetime import datetime
 
 ENDPOINT = "https://api.detectify.com/rest"
 api_key = os.getenv("API_KEY")
-api_secret_key = os.getenv("API_SECRET_KEY")
+# api_secret_key = os.getenv("API_SECRET_KEY")
+api_secret_key = "10840b0f938942feafb7186de74b9682"
 
 
 def send_post_request(data: dict or None, path: str, url: str) -> dict or None:
